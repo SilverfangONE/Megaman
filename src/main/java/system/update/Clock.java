@@ -1,9 +1,13 @@
-package game.system.update;
+package system.update;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import objects.PaintableObject;
+import objects.RenderableObject;
+import objects.UpdatableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.PropertiesLoader;
 
 /**
  * Game game.system.update.Clock
@@ -14,13 +18,13 @@ public class Clock implements Runnable {
 
     private static Logger logger = LoggerFactory.getLogger(Clock.class);
 
-    private Updatable[] updatable;
-    private Renderable[] renderable;
+    private UpdatableObject[] updatable;
+    private RenderableObject[] renderable;
 
     /**
      * Time interval for processing frame
      */
-    private final long OPTIMAL_TIME = (long) (Math.pow(10,9) / Integer.parseInt(Game.props.getProperty("game.fps")));
+    private final long OPTIMAL_TIME = (long) (Math.pow(10,9) / PropertiesLoader.getPropertyInt("game.fps"));
 
     private final boolean run = true;
 
@@ -63,6 +67,7 @@ public class Clock implements Runnable {
         for(int i = 0; i < this.updatable.length; i++) {
             this.updatable[i].update();
         }
+
     }
 
     /**

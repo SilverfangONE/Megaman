@@ -1,5 +1,9 @@
-package game.system.render;
+package system.render;
 
+import objects.PaintableObject;
+import objects.RenderableObject;
+import objects.UpdatableObject;
+import objects.creatures.Player;
 import objects.screen.Room;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,34 +16,37 @@ import java.io.IOException;
 /**
  * Main Frame
  */
-public class Camera extends Canvas implements game.objects.Updatable {
+public class Camera extends Canvas implements UpdatableObject, PaintableObject, RenderableObject {
 
     private Room room;
+    private Player player;
 
-    public Camera () throws IOException {
-        this.res = res;
-        this.camera = new RenderManager(res, Room.readRaw("./TileMap/test_01.json"));
-        settings();
-    }
-
-    /**
-     * setup Main Frame
-     */
-    private void settings () {
-        camera.setBounds(-16, -16, camera.getLevel().getWidth() * camera.getLevel().getTileWidth(), camera.getLevel().getHeight() * camera.getLevel().getTileHeight());
+    public Camera ( Room entryRoom, Player player ) throws IOException {
+        this.room = entryRoom;
+        this.player = player;
     }
 
     /**
      * painting the component
      */
+    @Override
     public void paint ( Graphics g ) {
-        // TODO
+
+        // from first to second layer
+        room.paint(g);
+
+        // player
+        player.paint(g);
     }
 
     @Override
     public void update () {
+        // update values
 
     }
 
-    public
+    @Override
+    public void render () {
+        repaint();
+    }
 }

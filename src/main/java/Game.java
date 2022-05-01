@@ -1,12 +1,16 @@
-import game.objects.Renderable;
-import game.objects.Updatable;
-import game.system.render.Camera;
-import game.system.update.Clock;
+
+
 import lombok.RequiredArgsConstructor;
+import objects.PaintableObject;
+import objects.RenderableObject;
+import objects.UpdatableObject;
+import objects.creatures.Player;
+import objects.screen.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import system.render.Camera;
+import system.update.Clock;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -23,12 +27,13 @@ public class Game {
 
     public static final Properties props = getProperties();
 
-    public final Camera frame;
+    public final Camera camera;
     public Clock clock;
 
     public static final int RES_HEIGHT = Integer.parseInt(props.getProperty("game.resolution.height"));
     public static final int RES_WIDTH = Integer.parseInt(props.getProperty("game.resolution.width"));
     public static final int RES_SCALE_FACTOR = Integer.parseInt(props.getProperty("game.resolution.scale"));
+    public static final int TILE_HEIGHT = Integer.parseInt(props.getProperty("game.tile.height"));
 
     public final String TITLE = props.getProperty("game.title");
 
@@ -38,7 +43,11 @@ public class Game {
 
     public Game () throws IOException {
         this.logger.debug("Init Game");
-        this.frame = new Camera(this.TITLE, new Dimension(RES_SCALE_FACTOR * this.RES_WIDTH, RES_SCALE_FACTOR * this.RES_HEIGHT));
+
+        Room entryRoom = Room.readRaw("./TileMap/test_01.json");
+        Player player = new Player();
+
+        this.camera = new Camera(entryRoom, player);
     }
 
     /**
@@ -48,8 +57,8 @@ public class Game {
 
         this.logger.debug("Start Game");
 
-        Updatable[] updatable = { this.frame.getCamera() };
-        Renderable[] renderable = { this.frame.getCamera() };
+        UpdatableObject[] updatable = { this.camera };
+        RenderableObject[] renderable = { this.camera };
 
         this.clock = new Clock(updatable, renderable);
         new Thread(this.clock).start();
@@ -57,8 +66,10 @@ public class Game {
 
     private static Properties getProperties()  {
         Properties p = new Properties();
+
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream is = classloader.getResourceAsStream("application.properties");
+
         try {
             p.load(is);
         } catch (IOException ioException) {
