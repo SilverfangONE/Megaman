@@ -1,5 +1,7 @@
-package game.system;
-
+import game.objects.Renderable;
+import game.objects.Updatable;
+import game.system.render.Camera;
+import game.system.update.Clock;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +23,22 @@ public class Game {
 
     public static final Properties props = getProperties();
 
-    public final MainFrame frame;
+    public final Camera frame;
     public Clock clock;
 
-    public final int RES_HEIGHT = Integer.parseInt(props.getProperty("game.resolution.width"));
-    public final int RES_WIDTH = Integer.parseInt(props.getProperty("game.resolution.width"));
+    public static final int RES_HEIGHT = Integer.parseInt(props.getProperty("game.resolution.height"));
+    public static final int RES_WIDTH = Integer.parseInt(props.getProperty("game.resolution.width"));
+    public static final int RES_SCALE_FACTOR = Integer.parseInt(props.getProperty("game.resolution.scale"));
+
     public final String TITLE = props.getProperty("game.title");
+
+    public static void main(String[] args) throws IOException {
+        new Game().start();
+    }
 
     public Game () throws IOException {
         this.logger.debug("Init Game");
-        this.frame = new MainFrame(this.TITLE, new Dimension(this.RES_HEIGHT, this.RES_WIDTH));
+        this.frame = new Camera(this.TITLE, new Dimension(RES_SCALE_FACTOR * this.RES_WIDTH, RES_SCALE_FACTOR * this.RES_HEIGHT));
     }
 
     /**
@@ -40,8 +48,8 @@ public class Game {
 
         this.logger.debug("Start Game");
 
-        Updatable[] updatable = {};
-        Renderable[] renderable = {};
+        Updatable[] updatable = { this.frame.getCamera() };
+        Renderable[] renderable = { this.frame.getCamera() };
 
         this.clock = new Clock(updatable, renderable);
         new Thread(this.clock).start();

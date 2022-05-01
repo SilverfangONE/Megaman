@@ -1,4 +1,4 @@
-package game.system;
+package game.system.update;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -6,14 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Game Clock
+ * Game game.system.update.Clock
  */
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Clock implements Runnable {
 
     private static Logger logger = LoggerFactory.getLogger(Clock.class);
-
 
     private Updatable[] updatable;
     private Renderable[] renderable;
@@ -31,7 +30,7 @@ public class Clock implements Runnable {
     @Override
     public void run () {
 
-        logger.debug("Start Clock");
+        logger.debug("Start game.system.update.Clock");
 
         int fps = 0;
         while(run) {
@@ -52,7 +51,7 @@ public class Clock implements Runnable {
             try {
                 Thread.sleep((OPTIMAL_TIME - (System.nanoTime() - start))/(long)(Math.pow(10, 6)));
             } catch (InterruptedException e) {
-                logger.debug("Clock: {}", e.getMessage());
+                logger.debug("game.system.update.Clock: {}", e.getMessage());
             }
         }
     }
