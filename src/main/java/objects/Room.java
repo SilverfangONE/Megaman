@@ -1,31 +1,27 @@
-package objects.screen;
+package objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
-import objects.PaintableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import util.TileMap;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 @Data
-public class Room implements PaintableObject {
+@Slf4j
+public class Room {
 
-    private static Logger logger = LoggerFactory.getLogger(Room.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private final int WORLD_HEIGHT;
-    private final int WORLD_WIDTH;
+    private final int roomHeight;
+    private final int roomWidth;
 
     private final TileMap[] layers;
 
@@ -35,8 +31,8 @@ public class Room implements PaintableObject {
         @JsonProperty("width") int width,
         @JsonProperty("layers") TileMap[] layers
     )  {
-        this.WORLD_HEIGHT = height;
-        this.WORLD_WIDTH = width;
+        this.roomHeight = height;
+        this.roomWidth = width;
         this.layers = layers;
     }
 
@@ -49,7 +45,7 @@ public class Room implements PaintableObject {
      */
     public static Room readRaw( String path) throws IOException {
 
-        logger.debug("Try to read level JSON: {}", path);
+        log.debug("Try to read level JSON: {}", path);
 
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -71,8 +67,6 @@ public class Room implements PaintableObject {
      * @param g graphics object on which to be drawn
      * @return arrayList with sub buffered images
      */
-
-    @Override
     public void paint ( Graphics g ) {
         for(TileMap tileMap: this.layers) {
             tileMap.paint(g);

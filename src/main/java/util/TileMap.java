@@ -1,10 +1,9 @@
-package objects.screen;
+package util;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import objects.PaintableObject;
-import util.PropertiesLoader;
+import lombok.NoArgsConstructor;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,7 +15,8 @@ import java.util.ArrayList;
  * Layer from HoleTileMap
  */
 @Data
-public class TileMap implements PaintableObject {
+@NoArgsConstructor
+public class TileMap {
 
     private int id;
     private String name;
@@ -67,9 +67,9 @@ public class TileMap implements PaintableObject {
         ArrayList<BufferedImage> tileMap = new ArrayList<>();
 
         // iterate over image to create tile set
-        for (int y = 0; y < source.getHeight(); y += PropertiesLoader.getPropertyInt("game.tile.height")) {
-            for (int x = 0; x < source.getWidth(); x += PropertiesLoader.getPropertyInt("game.resolution.width")) {
-                tileMap.add(source.getSubimage(x, y, PropertiesLoader.getPropertyInt("game.resolution.width"), PropertiesLoader.getPropertyInt("game.tile.height")));
+        for (int y = 0; y < source.getHeight(); y += PropertiesLoader.getInt("game.tile.height")) {
+            for (int x = 0; x < source.getWidth(); x += PropertiesLoader.getInt("game.resolution.width")) {
+                tileMap.add(source.getSubimage(x, y, PropertiesLoader.getInt("game.resolution.width"), PropertiesLoader.getInt("game.tile.height")));
             }
         }
         return tileMap;
@@ -88,13 +88,11 @@ public class TileMap implements PaintableObject {
             return null;
         }
     }
-
-    @Override
     public void paint ( Graphics g ) {
 
         // tile map layer pointer
-        final int TILE_HEIGHT = PropertiesLoader.getPropertyInt("game.tile.height");
-        final int TILE_WIDTH = PropertiesLoader.getPropertyInt("game.tile.width");
+        final int TILE_HEIGHT = PropertiesLoader.getInt("game.tile.height");
+        final int TILE_WIDTH = PropertiesLoader.getInt("game.tile.width");
 
         int y = 0, x = 0, count = 0;
         for (int p = 0; p < this.data.length; p++) {
@@ -107,14 +105,16 @@ public class TileMap implements PaintableObject {
             }
 
             if (data[p] > 0) {
-                g.drawImage(
+               /* g.drawImage(
                         bufferedImages.get(this.data[p] - 1),
                         x,
                         y,
                         16,
                         16,
                         null
+
                 );
+                */
             }
 
             // increment

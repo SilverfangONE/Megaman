@@ -24,11 +24,11 @@ public class PropertiesLoader {
         return p;
     }
 
-    public static String getProperty(String key) {
+    public static String getStr ( String key) {
         return props.getProperty(key);
     }
 
-    public static int getPropertyInt(String key) {
+    public static int getInt ( String key) {
         return Integer.parseInt(props.getProperty(key));
     }
 }
